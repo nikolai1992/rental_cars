@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\CheckStatusAction;
 use App\Services\Admin\OrderFunctions;
 use App\Models\Car;
 use App\Models\Order;
@@ -12,7 +13,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Order\OrderUpdateRequest;
 use App\Http\Requests\Admin\Order\OrderUpdateWithDriverRequest;
 use Session;
-use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -129,7 +129,7 @@ class OrderController extends Controller
         $old_status = $order->status;
 
         $order->update($data);
-        OrderFunctions::checkStatus($order, $old_status);
+        (new CheckStatusAction())->checkStatus($order, $old_status);
 
         Session::flash('flash_message', "Заявка успешно обновлена");
 
